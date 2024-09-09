@@ -6,8 +6,6 @@ This script is a probe of concept of the previous attack that will monitor a buc
 
 **REMEMBER TO UPDATE THE REVERSE SHELL ADDRESS INSIDE `reverse_shell.py` BEFORE EXECUTING IT**.
 
-This PoC has a failure and it's that it only detects when a new DAG is created and not when an already existing one is updated.
-
 ```bash
 # Installation
 python3 -m pip install -r requirements.txt
