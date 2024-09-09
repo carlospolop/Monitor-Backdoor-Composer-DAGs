@@ -4,6 +4,8 @@ If you have read and write access over a GCP Storage bucket used to store the co
 
 This script is a probe of concept of the previous attack that will monitor a bucket and submit a python file (`reverse_shell.py`) with some python code that will send a reverse shell.
 
+Find more information in https://cloud.hacktricks.xyz/pentesting-cloud/gcp-security/gcp-privilege-escalation/gcp-storage-privesc#composer
+
 **REMEMBER TO UPDATE THE REVERSE SHELL ADDRESS INSIDE `reverse_shell.py` BEFORE EXECUTING IT**.
 
 ```bash
